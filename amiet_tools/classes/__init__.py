@@ -1,16 +1,12 @@
 """
-@Author: Fabio Casagrande Hirono
-================================
-Models:
--------
-    xxx
-    Available classes:
-    ---------------------
-        >>> TestSetup
-        >>> AirfoilGeom
-        >>> FrequencyVars
-        >>> xxx
-    For further information, check the class specific documentation.
+Author: Fabio Casagrande Hirono
+
+Available classes:
+---------------------
+    >>> TestSetup()
+    >>> AirfoilGeom()
+    >>> FrequencyVars(f0, testSetup)
+For further information, check the class specific documentation.
 """
 
 from .TestSetup import TestSetup

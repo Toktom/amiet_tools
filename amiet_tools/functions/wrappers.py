@@ -1,3 +1,6 @@
+"""
+Author: Fabio Casagrande Hirono
+"""
 import numpy as np
 import amiet_tools as AmT
 

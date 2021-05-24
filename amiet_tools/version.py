@@ -1,4 +1,3 @@
-# separeted file to get version information without importing pyabsorp lib
 __author__ = "Fabio Casagrande Hirono"
-__date__ = "X June 2020"
+__date__ = "24 May 2021"
 __version__ = "0.0.1"

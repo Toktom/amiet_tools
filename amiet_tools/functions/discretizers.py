@@ -1,3 +1,6 @@
+"""
+Author: Fabio Casagrande Hirono
+"""
 import numpy as np
 from amiet_tools import AirfoilGeom
 

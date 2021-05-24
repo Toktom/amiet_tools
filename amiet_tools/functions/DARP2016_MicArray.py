@@ -1,3 +1,6 @@
+"""
+Author: Fabio Casagrande Hirono
+"""
 import numpy as np
 
 from .xml_utils import save_XML, XML_calib, XML_mic
@@ -54,6 +57,8 @@ def DARP2016_MicArray():
 
 
 def DARP2016_Acoular_XML():
+    """Saves the DARP2016_MicArray into a .xml file, compatile with Acoular.
+    """
     XYZ_array, array_cal = DARP2016_MicArray()
     array_name = "DARP2016"
     array_pos = XML_mic(XYZ_array)

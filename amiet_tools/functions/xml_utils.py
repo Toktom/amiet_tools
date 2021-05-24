@@ -1,10 +1,28 @@
-def save_XML(fname, data):
+"""
+Author: Michael Markus Ackermann
+"""
+
+def save_XML(fname: str, data: str):
+    """Save a .xml file.
+
+    Args:
+        fname (str): file name.
+        data (str): data to be saved in the xml, already formated.
+    """
     with open(fname+".xml", "w", encoding="utf-8") as file:
         file.write(data)
         file.close()
 
 
-def XML_mic(array):
+def XML_mic(array: list):
+    """Transforms an array of floats into a .xml formatation.
+
+    Args:
+        array (list): list of microphone locations [[X, n], [Y, n], [Z, n]].
+
+    Returns:
+        (str): string of points in a .xml format.
+    """
     positions = ""
     new_pos = '<pos\tName="Point {i}"\tx="{x}"\ty="{y}"\tz="{y}" />\n'
     for i in range(len(array[0])):
@@ -13,7 +31,15 @@ def XML_mic(array):
     return positions
 
 
-def XML_calib(calib_data):
+def XML_calib(calib_data: list):
+    """Transforms a calibration array of floats into a .xml formatation.
+
+    Args:
+        calib_data (list): list of the calibration data for the microphone.
+
+    Returns:
+        str: string of calibration data in a .xml format.
+    """
     positions = ""
     new_pos = '<pos\tName="Point {i}"\tfactor="{factor}"/>\n'
     for i in range(len(calib_data)):

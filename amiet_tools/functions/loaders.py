@@ -1,3 +1,6 @@
+"""
+Author: Fabio Casagrande Hirono
+"""
 import amiet_tools as AmT
 import json
 import os

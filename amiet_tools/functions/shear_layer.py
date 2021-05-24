@@ -1,3 +1,6 @@
+"""
+Author: Fabio Casagrande Hirono
+"""
 import numpy as np
 import scipy.optimize as so     # for shear layer correction functions
 
