@@ -28,8 +28,8 @@ import amiet_tools as AmT
 import MicArrayCsmHDF5 as CsmEssH5
 
 
-plt.rc('text', usetex=True)
-plt.close('all')
+#plt.rc('text', usetex=True)
+# plt.close('all')
 
 save_fig = False
 
@@ -37,10 +37,6 @@ save_fig = False
 # %% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 # load test setup from file
 DARP2016Setup = AmT.loadTestSetup('../DARP2016_TestSetup.txt')
-
-# export variables to current namespace
-(c0, rho0, p_ref, Ux, turb_intensity, length_scale, z_sl, Mach, beta,
- flow_param, dipole_axis) = DARP2016Setup.export_values()
 
 
 # %% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
@@ -88,17 +84,19 @@ xBounds = np.array([-0.25, 0.25])
 yBounds = np.array([-0.25, 0.25])
 zBounds = np.array([-0.075, 0.075])
 domainBounds = np.concatenate((xBounds[:, np.newaxis],
-                                yBounds[:, np.newaxis],
-                                zBounds[:, np.newaxis]), axis=1)
+                               yBounds[:, np.newaxis],
+                               zBounds[:, np.newaxis]), axis=1)
 
-CsmEss_ExpDARP2016.binCenterFrequenciesHz = (freq+df/2).reshape((1, freq.shape[0]))
+CsmEss_ExpDARP2016.binCenterFrequenciesHz = (
+    freq+df/2).reshape((1, freq.shape[0]))
 CsmEss_ExpDARP2016.frequencyBinCount = freq.shape[0]
 
 CsmEss_ExpDARP2016.CsmUnits = 'Pa^2/Hz'
 CsmEss_ExpDARP2016.fftSign = -1
 CsmEss_ExpDARP2016.spectrumType = 'psd'
 
-CsmEss_ExpDARP2016.machNumber = np.array([Mach, 0, 0], dtype='f8')
+CsmEss_ExpDARP2016.machNumber = np.array(
+    [DARP2016Setup.Mach, 0, 0], dtype='f8')
 CsmEss_ExpDARP2016.relativeHumidityPct = relativeHumidityPct
 CsmEss_ExpDARP2016.speedOfSoundMPerS = CsmEssH5.speed_of_sound(temperatureDegC)
 CsmEss_ExpDARP2016.staticPressurePa = atmPressurePa
@@ -143,7 +141,7 @@ CSM = CsmEssH5.CSM(signals, Ndft, fs, N_overlap, window)
 
 # %%*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 # Open HDF5 file, automatically closes at end of loop
-with h5py.File(CsmEss_ExpDARP2016.caseID +'CsmEss.h5', 'a') as CsmEssH5:
+with h5py.File(CsmEss_ExpDARP2016.caseID + 'CsmEss.h5', 'a') as CsmEssH5:
 
     # Create handles for CsmReal, CsmImaginary datasets
     CsmReal = CsmEssH5['CsmData/CsmReal']
@@ -163,7 +161,7 @@ with h5py.File(CsmEss_ExpDARP2016.caseID +'CsmEss.h5', 'a') as CsmEssH5:
 # %%*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 # Test reading experimental CSM file: plot coherence-squared function across mics
 
-with h5py.File(CsmEss_ExpDARP2016.caseID +'CsmEss.h5', 'a') as CsmEssH5:
+with h5py.File(CsmEss_ExpDARP2016.caseID + 'CsmEss.h5', 'a') as CsmEssH5:
 
     # Create handles for CsmReal, CsmImaginary datasets
     CsmReal = CsmEssH5['CsmData/CsmReal']
@@ -171,14 +169,15 @@ with h5py.File(CsmEss_ExpDARP2016.caseID +'CsmEss.h5', 'a') as CsmEssH5:
 
     CsmComplex = CsmReal[:] + 1j*CsmImaginary[:]
 
-    line_styles=['-', '--', '-.', ':', '-']
+    line_styles = ['-', '--', '-.', ':', '-']
 
     plt.figure()
 
     for m in range(31, M):
         cohere_m = (np.abs(CsmComplex[0, m, :])**2
                     / np.real(CsmComplex[0, 0, :]*CsmComplex[m, m, :]))
-        plt.semilogx(freq, cohere_m, label='Mic {}'.format(m+1), linestyle=line_styles[m-31])
+        plt.semilogx(freq, cohere_m, label='Mic {}'.format(
+            m+1), linestyle=line_styles[m-31])
 
     plt.legend()
     plt.xlim(100, 20e3)

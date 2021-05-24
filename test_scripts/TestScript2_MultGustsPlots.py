@@ -26,8 +26,8 @@ import numpy as np
 import amiet_tools as AmT
 
 import matplotlib.pyplot as plt
-plt.rc('text', usetex=True)
-plt.close('all')
+#plt.rc('text', usetex=True)
+# plt.close('all')
 
 
 def H(A):
@@ -43,16 +43,14 @@ save_fig = False
 DARP2016Setup = AmT.loadTestSetup('../DARP2016_TestSetup.txt')
 
 # export variables to current namespace
-(c0, rho0, p_ref, Ux, turb_intensity, length_scale, z_sl, Mach, beta,
- flow_param, dipole_axis) = DARP2016Setup.export_values()
 
 # %% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 # define airfoil points over the whole chord
 
 # load airfoil geometry from file
 DARP2016Airfoil = AmT.loadAirfoilGeom('../DARP2016_AirfoilGeom.txt')
-(b, d, Nx, Ny, XYZ_airfoil, dx, dy) = DARP2016Airfoil.export_values()
-XYZ_airfoil_calc = XYZ_airfoil.reshape(3, Nx*Ny)
+XYZ_airfoil_calc = DARP2016Airfoil.XYZ.reshape(
+    3, DARP2016Airfoil.Nx*DARP2016Airfoil.Ny)
 
 # %% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 # Frequency of analysis
@@ -63,10 +61,9 @@ XYZ_airfoil_calc = XYZ_airfoil.reshape(3, Nx*Ny)
 kc = 20     # approx 7.2 kHz
 
 # frequency [Hz]
-f0 = kc*c0/(2*np.pi*(2*b))
+f0 = kc*DARP2016Setup.c0/(2*np.pi*(2*DARP2016Airfoil.b))
 
 FreqVars = AmT.FrequencyVars(f0, DARP2016Setup)
-(k0, Kx, Ky_crit) = FreqVars.export_values()
 
 # %% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 # Create arc of far field points for directivity measurements
@@ -85,13 +82,16 @@ YZ_farfield = np.array([np.zeros(x_farfield.shape), x_farfield, z_farfield])
 # %% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 
 # vector of spanwise hydrodynamic gusts 'Ky' (for acoustic radiation)
-Ky = AmT.ky_vector(b, d, k0, Mach, beta, method='AcRad')
+Ky = AmT.ky_vector(DARP2016Airfoil.b, DARP2016Airfoil.d, FreqVars.k0,
+                   DARP2016Setup.Mach, DARP2016Setup.beta, method='AcRad')
 
 # turbulent velocity spectrum
-Phi2 = AmT.Phi_2D(Kx, Ky, Ux, turb_intensity, length_scale, model='K')[0]
+Phi2 = AmT.Phi_2D(FreqVars.Kx, Ky, DARP2016Setup.Ux,
+                  DARP2016Setup.turb_intensity, DARP2016Setup.length_scale, model='K')[0]
 
 # calculate source CSM
-Sqq, Sqq_dxy = AmT.calc_airfoil_Sqq(DARP2016Setup, DARP2016Airfoil, FreqVars, Ky, Phi2)
+Sqq, Sqq_dxy = AmT.calc_airfoil_Sqq(
+    DARP2016Setup, DARP2016Airfoil, FreqVars, Ky, Phi2)
 
 # apply airfoil grid area weighting to source CSM
 Sqq *= Sqq_dxy
@@ -103,10 +103,10 @@ Spp_Xdir = np.zeros((M_farfield,), 'complex')
 Spp_Ydir = np.zeros((M_farfield,), 'complex')
 
 # Matrices of Greens functions for directivities
-G_Xdir = AmT.dipole3D(XYZ_airfoil_calc, XZ_farfield, k0, dipole_axis,
-                      flow_param)
-G_Ydir = AmT.dipole3D(XYZ_airfoil_calc, YZ_farfield, k0, dipole_axis,
-                      flow_param)
+G_Xdir = AmT.dipole3D(XYZ_airfoil_calc, XZ_farfield, FreqVars.k0, DARP2016Setup.dipole_axis,
+                      DARP2016Setup.flow_param)
+G_Ydir = AmT.dipole3D(XYZ_airfoil_calc, YZ_farfield, FreqVars.k0, DARP2016Setup.dipole_axis,
+                      DARP2016Setup.flow_param)
 
 # calculates chordwise and spanwise PSDs (diag of mic CSMs)
 Spp_Xdir += np.real(np.diag(G_Xdir @ Sqq @ H(G_Xdir)))*4*np.pi
@@ -147,7 +147,6 @@ title_dir_XZ = ax_dir_XZ.set_title('Normalised Directivity on $y=0$ plane ($\phi
                                    fontsize=18, pad=-55)
 
 
-
 fig_dir_YZ = plt.figure(figsize=(6, 4))
 ax_dir_YZ = fig_dir_YZ.add_subplot(111, polar=True)
 plot_dir_YZ = ax_dir_YZ.plot(theta_farfield, 10*np.log10(np.abs(Spp_Ynorm)))
@@ -183,4 +182,3 @@ if save_fig:
     elif kc == 20:
         fig_dir_XZ.savefig('MultGust_Xdir_kc20.png'.format(kc))
         fig_dir_YZ.savefig('MultGust_Ydir_kc20.png'.format(kc))
-
