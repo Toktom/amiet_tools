@@ -1,0 +1,21 @@
+def save_XML(fname, data):
+    with open(fname+".xml", "w", encoding="utf-8") as file:
+        file.write(data)
+        file.close()
+
+
+def XML_mic(array):
+    positions = ""
+    new_pos = '<pos\tName="Point {i}"\tx="{x}"\ty="{y}"\tz="{y}" />\n'
+    for i in range(len(array[0])):
+        positions = positions + \
+            new_pos.format(i=i+1, x=array[0, i], y=array[1, i], z=array[2, i])
+    return positions
+
+
+def XML_calib(calib_data):
+    positions = ""
+    new_pos = '<pos\tName="Point {i}"\tfactor="{factor}"/>\n'
+    for i in range(len(calib_data)):
+        positions = positions + new_pos.format(i=i+1, factor=calib_data[i]/100)
+    return positions
