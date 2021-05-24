@@ -1,5 +1,6 @@
 import amiet_tools as AmT
 import json
+import os
 
 
 def loadTestSetup(*args):
@@ -27,17 +28,49 @@ def loadTestSetup(*args):
         return AmT.TestSetup()
 
     else:
-        with open(args[0], encoding="utf-8") as f:
-            obj = json.load(f)
-            f.close()
+        name, extension = os.path.splitext(args[0])
+        if extension == ".json":
+            with open(args[0], encoding="utf-8") as f:
+                obj = json.load(f)
+                f.close()
 
-        tS = AmT.TestSetup(c0=obj["c0"], rho0=obj["rho0"],
-                           p_ref=obj["Ux"], Ux=obj["Ux"],
-                           turb_intensity=obj["turb_intensity"],
-                           length_scale=obj["length_scale"],
-                           z_sl=obj["z_sl"])
+            tS = AmT.TestSetup(c0=obj["c0"], rho0=obj["rho0"],
+                               p_ref=obj["Ux"], Ux=obj["Ux"],
+                               turb_intensity=obj["turb_intensity"],
+                               length_scale=obj["length_scale"],
+                               z_sl=obj["z_sl"])
 
-        return tS
+            return tS
+        elif extension == ".txt":
+            # initialize new instance of testSetup
+            testSetupFromFile = AmT.TestSetup()
+
+            varList = ['c0', 'rho0', 'p_ref', 'Ux', 'turb_intensity',
+                       'length_scale', 'z_sl']
+            i = 0
+
+            # open file name given by 'args[0]'
+            with open(args[0]) as f:
+                # get list with file lines as strings
+                all_lines = f.readlines()
+
+                # for each line...
+                for line in all_lines:
+
+                    # skip comments and empty lines
+                    if line[0] in ['#', '\n']:
+                        pass
+
+                    else:
+                        words = line.split('\t')
+                        # take 1st element as value (ignore comments)
+                        exec('testSetupFromFile.' +
+                             varList[i] + '=' + words[0])
+                        i += 1
+
+            return testSetupFromFile
+        else:
+            raise ValueError("{} is not a valid format".format(extension))
 
 
 def loadAirfoilGeom(*args):
@@ -62,12 +95,45 @@ def loadAirfoilGeom(*args):
         return AmT.AirfoilGeom()
 
     else:
-        with open(args[0], encoding="utf-8") as f:
-            obj = json.load(f)
-            f.close()
+        name, extension = os.path.splitext(args[0])
+        if extension == ".json":
+            with open(args[0], encoding="utf-8") as f:
+                obj = json.load(f)
+                f.close()
 
-        # initialize new instance of testSetup
-        aG = AmT.AirfoilGeom(b=obj["b"], d=obj["d"],
-                             Nx=obj["Nx"], Ny=obj["Ny"])
+            # initialize new instance of testSetup
+            aG = AmT.AirfoilGeom(b=obj["b"], d=obj["d"],
+                                 Nx=obj["Nx"], Ny=obj["Ny"])
 
-        return aG
+            return aG
+        elif extension == ".txt":
+            # initialize new instance of testSetup
+            airfoilGeomFromFile = AmT.AirfoilGeom()
+
+            varList = ['b', 'd', 'Nx', 'Ny']
+            i = 0
+
+            #path_to_file = '../DARP2016_AirfoilGeom.txt'
+            with open(args[0]) as f:
+                # get list with file lines as strings
+                all_lines = f.readlines()
+
+                # for each line...
+                for line in all_lines:
+
+                    # skip comments and empty lines
+                    if line[0] in ['#', '\n']:
+                        pass
+
+                    else:
+                        words = line.split('\t')
+                        # take 1st element as value (ignore comments)
+                        exec('airfoilGeomFromFile.' +
+                             varList[i] + '=' + words[0])
+                        i += 1
+
+
+            return airfoilGeomFromFile
+
+        else:
+            raise ValueError("{} is not a valid format".format(extension))
