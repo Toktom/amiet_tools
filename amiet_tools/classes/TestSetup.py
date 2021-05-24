@@ -33,3 +33,8 @@ class TestSetup:
         self.Mach = self.Ux/self.c0
         self.beta = np.sqrt(1 - self.Mach**2)
         self.flow_param = (self.flow_dir, self.Mach)
+    
+    def export_values(self):
+        return (self.c0, self.rho0, self.p_ref, self.Ux, self.turb_intensity,
+                self.length_scale, self.z_sl, self.Mach, self.beta,
+                self.flow_param, self.dipole_axis)

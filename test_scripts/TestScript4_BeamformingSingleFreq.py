@@ -38,13 +38,17 @@ save_fig = False
 # load test setup from file
 DARP2016Setup = AmT.loadTestSetup('../DARP2016_TestSetup.txt')
 
+# export variables to current namespace
+(c0, rho0, p_ref, Ux, turb_intensity, length_scale, z_sl, Mach, beta,
+ flow_param, dipole_axis) = DARP2016Setup.export_values()
+
 # %% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 # define airfoil points over the whole chord
 
 # load airfoil geometry from file
 DARP2016Airfoil = AmT.loadAirfoilGeom('../DARP2016_AirfoilGeom.txt')
-XYZ_airfoil_calc = DARP2016Airfoil.XYZ.reshape(
-    3, DARP2016Airfoil.Nx*DARP2016Airfoil.Ny)
+(b, d, Nx, Ny, XYZ_airfoil, dx, dy) = DARP2016Airfoil.export_values()
+XYZ_airfoil_calc = XYZ_airfoil.reshape(3, Nx*Ny)
 
 
 # %% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
@@ -59,8 +63,8 @@ M = XYZ_array.shape[1]
 
 # obtain propag time and shear layer crossing point for every source-mic pair
 # (forward problem - frequency independent!)
-T_sl_fwd, XYZ_sl_fwd = AmT.ShearLayer_matrix(XYZ_airfoil_calc, XYZ_array, DARP2016Setup.z_sl,
-                                             DARP2016Setup.Ux, DARP2016Setup.c0)
+T_sl_fwd, XYZ_sl_fwd = AmT.ShearLayer_matrix(XYZ_airfoil_calc, XYZ_array, z_sl,
+                                             Ux, c0)
 
 # %% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 # Define frequency of analysis
@@ -71,20 +75,19 @@ kc = 10      # approx 3.6 kHz
 # kc = 20     # approx 7.2 kHz
 
 # frequency [Hz]
-f0 = kc*DARP2016Setup.c0/(2*np.pi*(2*DARP2016Airfoil.b))
+f0 = kc*c0/(2*np.pi*(2*b))
 
 FreqVars = AmT.FrequencyVars(f0, DARP2016Setup)
+(k0, Kx, Ky_crit) = FreqVars.export_values()
 
 # %% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 # Calculate airfoil acoustic source strength CSM
 
 # vector of spanwise gust wavenumbers
-Ky = AmT.ky_vector(DARP2016Airfoil.b, DARP2016Airfoil.d,
-                   FreqVars.k0, DARP2016Setup.Mach, DARP2016Setup.beta)
+Ky = AmT.ky_vector(b, d, k0, Mach, beta)
 
 # Turbulence spectrum (von Karman)
-Phi2 = AmT.Phi_2D(FreqVars.Kx, Ky, DARP2016Setup.Ux,
-                  DARP2016Setup.turb_intensity, DARP2016Setup.length_scale, model='K')[0]
+Phi2 = AmT.Phi_2D(Kx, Ky, Ux, turb_intensity, length_scale, model='K')[0]
 
 # calculate source CSM
 Sqq, Sqq_dxy = AmT.calc_airfoil_Sqq(
@@ -97,8 +100,8 @@ Sqq *= Sqq_dxy
 # Create mic array CSM
 
 # create fwd transfer function
-G_fwd = AmT.dipole_shear(XYZ_airfoil_calc, XYZ_array, XYZ_sl_fwd, T_sl_fwd, FreqVars.k0,
-                         DARP2016Setup.c0, DARP2016Setup.Mach)
+G_fwd = AmT.dipole_shear(XYZ_airfoil_calc, XYZ_array, XYZ_sl_fwd, T_sl_fwd, k0,
+                         c0, Mach)
 
 # calculate mic array CSM
 CSM = (G_fwd @ Sqq @ G_fwd.conj().T)*4*np.pi
@@ -152,8 +155,7 @@ ascan_x.legend([scatter1_proxy, scatter2_proxy], ['Mic Array', 'Grid Points'],
 dynamic_range = 15      # [dB]
 
 # obtain propag time and shear layer crossing point for every scan-mic pair
-T_sl, XYZ_sl = AmT.ShearLayer_matrix(
-    scan_xyz, XYZ_array, DARP2016Setup.z_sl, DARP2016Setup.Ux, DARP2016Setup.c0)
+T_sl, XYZ_sl = AmT.ShearLayer_matrix(scan_xyz, XYZ_array, z_sl, Ux, c0)
 
 # %% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 # Apply classical beamforming algorithm
@@ -166,8 +168,7 @@ W = np.zeros((M, N), 'complex')
 #G_grid = ArT.monopole3D(scan_xyz, XYZ_array, k0)
 
 # dipole grid with shear layer correction
-G_grid = AmT.dipole_shear(scan_xyz, XYZ_array, XYZ_sl,
-                          T_sl, FreqVars.k0, DARP2016Setup.c0, DARP2016Setup.Mach)
+G_grid = AmT.dipole_shear(scan_xyz, XYZ_array, XYZ_sl, T_sl, k0, c0, Mach)
 
 # calculate beamforming filters
 for n in range(N):
@@ -208,15 +209,12 @@ cbar1.ax.tick_params(labelsize=12)
 
 
 # Indicate the leading edge, trailing edge and sideplates on beamforming plot
-plt.vlines(-DARP2016Airfoil.b, -DARP2016Airfoil.d,
-           DARP2016Airfoil.d, color='k')
-plt.vlines(DARP2016Airfoil.b, -DARP2016Airfoil.d, DARP2016Airfoil.d, color='k')
-plt.hlines(-DARP2016Airfoil.d, -scan_sides[0]/2, scan_sides[0]/2, color='k')
-plt.hlines(DARP2016Airfoil.d, -scan_sides[0]/2, scan_sides[0]/2, color='k')
-plt.text(-DARP2016Airfoil.b+0.01, DARP2016Airfoil.d -
-         0.05, r'\textbf{LE}', fontsize='18', color='k')
-plt.text(DARP2016Airfoil.b+0.01, DARP2016Airfoil.d -
-         0.05, r'\textbf{TE}', fontsize='18', color='k')
+plt.vlines(-b, -d, d, color='k')
+plt.vlines(b, -d, d, color='k')
+plt.hlines(-d, -scan_sides[0]/2, scan_sides[0]/2, color='k')
+plt.hlines(d, -scan_sides[0]/2, scan_sides[0]/2, color='k')
+plt.text(-b+0.01, d-0.05, r'\textbf{LE}', fontsize='18', color='k')
+plt.text(b+0.01, d-0.05, r'\textbf{TE}', fontsize='18', color='k')
 
 if save_fig:
     plt.savefig('AirfoilBeamf_' + f0 + 'Hz.png', dpi=200)

@@ -28,8 +28,8 @@ import amiet_tools as AmT
 import MicArrayCsmHDF5 as CsmEssH5
 
 
-#plt.rc('text', usetex=True)
-# plt.close('all')
+plt.rc('text', usetex=True)
+plt.close('all')
 
 save_fig = False
 
@@ -37,6 +37,10 @@ save_fig = False
 # %% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 # load test setup from file
 DARP2016Setup = AmT.loadTestSetup('../DARP2016_TestSetup.txt')
+
+# export variables to current namespace
+(c0, rho0, p_ref, Ux, turb_intensity, length_scale, z_sl, Mach, beta,
+ flow_param, dipole_axis) = DARP2016Setup.export_values()
 
 
 # %% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
@@ -95,8 +99,7 @@ CsmEss_ExpDARP2016.CsmUnits = 'Pa^2/Hz'
 CsmEss_ExpDARP2016.fftSign = -1
 CsmEss_ExpDARP2016.spectrumType = 'psd'
 
-CsmEss_ExpDARP2016.machNumber = np.array(
-    [DARP2016Setup.Mach, 0, 0], dtype='f8')
+CsmEss_ExpDARP2016.machNumber = np.array([Mach, 0, 0], dtype='f8')
 CsmEss_ExpDARP2016.relativeHumidityPct = relativeHumidityPct
 CsmEss_ExpDARP2016.speedOfSoundMPerS = CsmEssH5.speed_of_sound(temperatureDegC)
 CsmEss_ExpDARP2016.staticPressurePa = atmPressurePa

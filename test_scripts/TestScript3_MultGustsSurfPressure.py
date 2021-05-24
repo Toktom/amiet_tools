@@ -56,30 +56,34 @@ save_fig = False
 # load test setup from file
 DARP2016Setup = AmT.loadTestSetup('../DARP2016_TestSetup.txt')
 
+# export variables to current namespace
+(c0, rho0, p_ref, Ux, turb_intensity, length_scale, z_sl, Mach, beta,
+ flow_param, dipole_axis) = DARP2016Setup.export_values()
+
 # %% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 # define airfoil points over the whole chord
 
 # load airfoil geometry from file
 DARP2016Airfoil = AmT.loadAirfoilGeom('../DARP2016_AirfoilGeom.txt')
-XYZ_airfoil_calc = DARP2016Airfoil.XYZ.reshape(
-    3, DARP2016Airfoil.Nx*DARP2016Airfoil.Ny)
+(b, d, Nx, Ny, XYZ_airfoil, dx, dy) = DARP2016Airfoil.export_values()
+XYZ_airfoil_calc = XYZ_airfoil.reshape(3, Nx*Ny)
 
-dxy = DARP2016Airfoil.dx[np.newaxis, :] * \
-    (np.ones(DARP2016Airfoil.Ny)*DARP2016Airfoil.dy)[:, np.newaxis]
+dxy = dx[np.newaxis, :]*(np.ones(Ny)*dy)[:, np.newaxis]
 
-X_plane = DARP2016Airfoil.XYZ[0]
-Y_plane = DARP2016Airfoil.XYZ[1]
+X_plane = XYZ_airfoil[0]
+Y_plane = XYZ_airfoil[1]
 
 # %% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 # frequency of operation
 # kx = [0.5, 5, 20], f0 ~= [180 Hz, 1.8 kHz, 7.2 kHz]
 
 kc = 20                          # chordwise normalised frequency = k0*(2*b)
-f0 = kc*DARP2016Setup.c0/(2*np.pi*(2*DARP2016Airfoil.b))
+f0 = kc*c0/(2*np.pi*(2*b))
 
 FreqVars = AmT.FrequencyVars(f0, DARP2016Setup)
+(k0, Kx, Ky_crit) = FreqVars.export_values()
 
-ac_wavelength = 2*np.pi/FreqVars.k0
+ac_wavelength = 2*np.pi/k0
 
 # %% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 # define coherence phase ref
@@ -103,22 +107,20 @@ ref_index = find_index(XYZ_airfoil_calc[:2], xy_phase_ref)
 
 # %%
 # find ky that is at -20 dB at every chord point
-ky_20dBAtt = AmT.ky_att(
-    xy_phase_ref[0], DARP2016Airfoil.b, DARP2016Setup.Mach, FreqVars.k0, Att=-20)
+ky_20dBAtt = AmT.ky_att(xy_phase_ref[0], b, Mach, k0, Att=-20)
 
 # critical gust spanwise wavenumber
-ky_crit = FreqVars.k0/DARP2016Setup.beta
+ky_crit = k0/beta
 
 ky_max = 1.5*ky_20dBAtt
 
-sinc_width = 2*np.pi/(2*DARP2016Airfoil.d)
+sinc_width = 2*np.pi/(2*d)
 
 # get ky with spacing equal to 1/4 width of sinc function
 N_ky = np.int(np.ceil(ky_max/(sinc_width/4)))
 
 Ky, dKy = np.linspace(-ky_max, ky_max, (2*N_ky)+1, retstep=True)
-Phi2 = AmT.Phi_2D(FreqVars.Kx, Ky, DARP2016Setup.Ux,
-                  DARP2016Setup.turb_intensity, DARP2016Setup.length_scale, model='K')[0]
+Phi2 = AmT.Phi_2D(Kx, Ky, Ux, turb_intensity, length_scale, model='K')[0]
 
 # Calculate CSM for airfoil surface
 Sqq, Sqq_dxy = AmT.calc_airfoil_Sqq(

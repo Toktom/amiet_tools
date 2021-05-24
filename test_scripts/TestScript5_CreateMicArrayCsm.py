@@ -40,8 +40,8 @@ import amiet_tools as AmT
 import MicArrayCsmHDF5 as CsmEssH5
 
 
-#plt.rc('text', usetex=True)
-# plt.close('all')
+plt.rc('text', usetex=True)
+plt.close('all')
 
 save_fig = False
 
@@ -50,14 +50,18 @@ save_fig = False
 # load test setup from file
 DARP2016Setup = AmT.loadTestSetup('../DARP2016_TestSetup.txt')
 
+# export variables to current namespace
+(c0, rho0, p_ref, Ux, turb_intensity, length_scale, z_sl, Mach, beta,
+ flow_param, dipole_axis) = DARP2016Setup.export_values()
+
 # %% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 # define airfoil points over the whole chord
 
 # load airfoil geometry from file
 DARP2016Airfoil = AmT.loadAirfoilGeom('../DARP2016_AirfoilGeom.txt')
+(b, d, Nx, Ny, XYZ_airfoil, dx, dy) = DARP2016Airfoil.export_values()
 
-XYZ_airfoil_calc = DARP2016Airfoil.XYZ.reshape(
-    3, DARP2016Airfoil.Nx*DARP2016Airfoil.Ny)
+XYZ_airfoil_calc = XYZ_airfoil.reshape(3, Nx*Ny)
 
 
 # %% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
@@ -75,7 +79,7 @@ M = XYZ_array.shape[1]
 print('Calculating shear layer correction - this should take a few minutes...')
 
 T_shearLayer, XYZ_shearLayer = AmT.ShearLayer_matrix(XYZ_airfoil_calc,
-                                                     XYZ_array, DARP2016Setup.z_sl, DARP2016Setup.Ux, DARP2016Setup.c0)
+                                                     XYZ_array, z_sl, Ux, c0)
 
 print('Shear layer correction calculation done!')
 
@@ -127,7 +131,7 @@ CsmEss_DARP2016.CsmUnits = 'Pa^2/Hz'
 CsmEss_DARP2016.fftSign = -1
 CsmEss_DARP2016.spectrumType = 'psd'
 
-CsmEss_DARP2016.machNumber = np.array([DARP2016Setup.Mach, 0, 0], dtype='f8')
+CsmEss_DARP2016.machNumber = np.array([Mach, 0, 0], dtype='f8')
 CsmEss_DARP2016.relativeHumidityPct = relativeHumidityPct
 CsmEss_DARP2016.speedOfSoundMPerS = CsmEssH5.speed_of_sound(temperatureDegC)
 CsmEss_DARP2016.staticPressurePa = atmPressurePa
@@ -182,18 +186,17 @@ with h5py.File(CsmEss_DARP2016.caseID + 'CsmEss.h5', 'a') as CsmEssH5File:
 
         # frequency-related variables
         FreqVars = AmT.FrequencyVars(f, DARP2016Setup)
+        (k0, Kx, Ky_crit) = FreqVars.export_values()
 
         # vector of spanwise hydrodynamic gust wavenumbers
-        Ky_vec = AmT.ky_vector(
-            DARP2016Airfoil.b, DARP2016Airfoil.d, FreqVars.k0, DARP2016Setup.Mach, DARP2016Setup.beta)
+        Ky_vec = AmT.ky_vector(b, d, k0, Mach, beta)
 
         # gust energy spectrum (von Karman)
-        Phi = AmT.Phi_2D(FreqVars.Kx, Ky_vec, DARP2016Setup.Ux,
-                         DARP2016Setup.turb_intensity, DARP2016Setup.length_scale)[0]
+        Phi = AmT.Phi_2D(Kx, Ky_vec, Ux, turb_intensity, length_scale)[0]
 
         # convected dipole transfer function - includes shear layer refraction
         Gdip = AmT.dipole_shear(XYZ_airfoil_calc, XYZ_array, XYZ_shearLayer,
-                                T_shearLayer, FreqVars.k0, DARP2016Setup.c0, DARP2016Setup.Mach)
+                                T_shearLayer, k0, c0, Mach)
 
         # CSM of mic array pressures
         MicArrayCsm = AmT.calc_radiated_Spp(DARP2016Setup, DARP2016Airfoil,

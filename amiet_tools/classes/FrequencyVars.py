@@ -22,3 +22,6 @@ class FrequencyVars:
 
         # gust/hydrodynamic spanwise critical wavenumber
         self.Ky_crit = self.Kx*self.Mach/self.beta
+    
+    def export_values(self):
+        return (self.k0, self.Kx, self.Ky_crit)

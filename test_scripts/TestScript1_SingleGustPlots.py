@@ -29,15 +29,16 @@ fchirono@gmail.com
 
 
 import numpy as np
+
 import amiet_tools as AmT
 
 import matplotlib.pyplot as plt
+plt.rc('text', usetex=True)
+plt.close('all')
 
-#plt.rc('text', usetex=True)
-#plt.close('all')
 
 # flag for saving figures
-save_fig = True
+save_fig = False
 
 # flag for calculating and plotting near-field radiation slices
 # --->>>may take many minutes!
@@ -47,22 +48,27 @@ calc_nearfield = False
 # load test setup from file
 DARP2016Setup = AmT.loadTestSetup('../DARP2016_TestSetup.txt')
 
+# export variables to current namespace
+(c0, rho0, p_ref, Ux, turb_intensity, length_scale, z_sl, Mach, beta,
+ flow_param, dipole_axis) = DARP2016Setup.export_values()
+
 # %% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 # define airfoil points over the whole chord
 
 # load airfoil geometry from file
 DARP2016Airfoil = AmT.loadAirfoilGeom('../DARP2016_AirfoilGeom.txt')
-XYZ_airfoil_calc = DARP2016Airfoil.XYZ.reshape(
-    3, DARP2016Airfoil.Nx*DARP2016Airfoil.Ny)
+(b, d, Nx, Ny, XYZ_airfoil, dx, dy) = DARP2016Airfoil.export_values()
+XYZ_airfoil_calc = XYZ_airfoil.reshape(3, Nx*Ny)
 
 # %% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 # frequency of operation
 kc = 5                          # chordwise normalised frequency = k0*(2*b)
-f0 = kc*DARP2016Setup.c0/(2*np.pi*(2*DARP2016Airfoil.b))      # approx 1.8 kHz
+f0 = kc*c0/(2*np.pi*(2*b))      # approx 1.8 kHz
 
 FreqVars = AmT.FrequencyVars(f0, DARP2016Setup)
+(k0, Kx, Ky_crit) = FreqVars.export_values()
 
-ac_wavelength = 2*np.pi/FreqVars.k0
+ac_wavelength = 2*np.pi/k0
 
 # %% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 # turbulence/gust amplitude
@@ -80,28 +86,26 @@ if test_case == 1:
 
 elif test_case == 2:
     # supercritical gust, oblique incidence
-    ky = 0.35*FreqVars.Ky_crit
+    ky = 0.35*Ky_crit
     fig_title = 'Kphi_035'
 
 elif test_case == 3:
     # supercritical gust, oblique incidence / close to critical
-    ky = 0.75*FreqVars.Ky_crit
+    ky = 0.75*Ky_crit
     fig_title = 'Kphi_075'
 
 elif test_case == 4:
     # subcritical gust
-    ky = 1.25*FreqVars.Ky_crit
+    ky = 1.25*Ky_crit
     fig_title = 'Kphi_125'
 
 # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 
 # Calculate the pressure 'jump' over the airfoil
-delta_p1 = AmT.delta_p(DARP2016Setup.rho0, DARP2016Airfoil.b, w0, DARP2016Setup.Ux,
-                       FreqVars.Kx, ky, DARP2016Airfoil.XYZ[0:2], DARP2016Setup.Mach)
+delta_p1 = AmT.delta_p(rho0, b, w0, Ux, Kx, ky, XYZ_airfoil[0:2], Mach)
 
 # reshape airfoil ac. source strengths, apply weights by grid area
-delta_p1_calc = (delta_p1*DARP2016Airfoil.dx).reshape(DARP2016Airfoil.Nx *
-                                                      DARP2016Airfoil.Ny)*DARP2016Airfoil.dy
+delta_p1_calc = (delta_p1*dx).reshape(Nx*Ny)*dy
 
 # %%*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 # Plot the airfoil source strength distribution
@@ -110,37 +114,37 @@ abs_p1_max = np.max(np.abs(delta_p1))
 
 fig_airfoil = plt.figure(figsize=(6.4, 5))
 ax1_airfoil = plt.subplot(121)
-re_p = ax1_airfoil.pcolormesh(DARP2016Airfoil.XYZ[0], DARP2016Airfoil.XYZ[1],
+re_p = ax1_airfoil.pcolormesh(XYZ_airfoil[0], XYZ_airfoil[1],
                               np.real(delta_p1)/re_p1_max, cmap='seismic',
                               shading='nearest', vmin=-1, vmax=+1)
 ax1_airfoil.axis('equal')
 ax1_airfoil.set_title(r'$Re\{\Delta p(x_s, y_s)\}$ [a.u.]', fontsize=18)
 
-ax1_airfoil.set_yticks([-DARP2016Airfoil.d, 0, +DARP2016Airfoil.d])
+ax1_airfoil.set_yticks([-d, 0, +d])
 ax1_airfoil.set_yticklabels([r'$-d$', r'$0$', r'$+d$'], fontsize=18)
-ax1_airfoil.set_xticks([-DARP2016Airfoil.b, 0, DARP2016Airfoil.b])
+ax1_airfoil.set_xticks([-b, 0, b])
 ax1_airfoil.set_xticklabels([r'$-b$', r'$0$', r'$+b$'], fontsize=18)
 
-ax1_airfoil.set_ylim(-1.1*DARP2016Airfoil.d, 1.1*DARP2016Airfoil.d)
+ax1_airfoil.set_ylim(-1.1*d, 1.1*d)
 ax1_airfoil.set_xlabel(r'$x_s$', fontsize=18)
 ax1_airfoil.set_ylabel(r'$y_s$', fontsize=18)
 plt.colorbar(re_p)
 
 
 ax2_airfoil = plt.subplot(122)
-abs_p = ax2_airfoil.pcolormesh(DARP2016Airfoil.XYZ[0], DARP2016Airfoil.XYZ[1],
+abs_p = ax2_airfoil.pcolormesh(XYZ_airfoil[0], XYZ_airfoil[1],
                                20*np.log10(np.abs(delta_p1)/abs_p1_max),
                                cmap='inferno', shading='nearest',
                                vmax=0, vmin=-30)
 ax2_airfoil.axis('equal')
 ax2_airfoil.set_title(r'$|\Delta p(x_s, y_s)|$ [dB]', fontsize=18)
 
-ax2_airfoil.set_yticks([-DARP2016Airfoil.d, 0, +DARP2016Airfoil.d])
+ax2_airfoil.set_yticks([-d, 0, +d])
 ax2_airfoil.set_yticklabels([r'$-d$', r'$0$', r'$+d$'], fontsize=18)
-ax2_airfoil.set_xticks([-DARP2016Airfoil.b, 0, DARP2016Airfoil.b])
+ax2_airfoil.set_xticks([-b, 0, b])
 ax2_airfoil.set_xticklabels([r'$-b$', r'$0$', r'$+b$'], fontsize=18)
 
-ax2_airfoil.set_ylim(-1.1*DARP2016Airfoil.d, 1.1*DARP2016Airfoil.d)
+ax2_airfoil.set_ylim(-1.1*d, 1.1*d)
 ax2_airfoil.set_xlabel(r'$x_s$', fontsize=18)
 plt.colorbar(abs_p)
 fig_airfoil.set_tight_layout(True)
@@ -169,11 +173,11 @@ p_YZ_farfield = np.zeros(xy_farfield.shape, 'complex')
 
 # calculate matrices of convected dipole Greens functions for each source
 # to observers
-G_ffXZ = AmT.dipole3D(XYZ_airfoil_calc, XZ_farfield, FreqVars.k0, DARP2016Setup.dipole_axis,
-                      DARP2016Setup.flow_param)
+G_ffXZ = AmT.dipole3D(XYZ_airfoil_calc, XZ_farfield, k0, dipole_axis,
+                      flow_param)
 
-G_ffYZ = AmT.dipole3D(XYZ_airfoil_calc, YZ_farfield, FreqVars.k0, DARP2016Setup.dipole_axis,
-                      DARP2016Setup.flow_param)
+G_ffYZ = AmT.dipole3D(XYZ_airfoil_calc, YZ_farfield, k0, dipole_axis,
+                      flow_param)
 
 # Calculate the pressure in the far field
 p_XZ_farfield = G_ffXZ @ delta_p1_calc
@@ -268,11 +272,11 @@ if calc_nearfield:
     # Too many points in 2D cuts to generate entire G matrices; calculate the ac.
     # field of source grid point individually
     for s in range(delta_p1_calc.shape[0]):
-        G_pXZ = AmT.dipole3D(XYZ_airfoil_calc[:, s, np.newaxis], XZ_mesh1_calc, FreqVars.k0,
-                             DARP2016Setup.dipole_axis, DARP2016Setup.flow_param)
+        G_pXZ = AmT.dipole3D(XYZ_airfoil_calc[:, s, np.newaxis], XZ_mesh1_calc, k0,
+                             dipole_axis, flow_param)
 
-        G_pYZ = AmT.dipole3D(XYZ_airfoil_calc[:, s, np.newaxis], YZ_mesh2_calc, FreqVars.k0,
-                             DARP2016Setup.dipole_axis, DARP2016Setup.flow_param)
+        G_pYZ = AmT.dipole3D(XYZ_airfoil_calc[:, s, np.newaxis], YZ_mesh2_calc, k0,
+                             dipole_axis, flow_param)
 
         # Calculate the pressure in the near field
         pressure_XZ_calc += delta_p1_calc[s]*G_pXZ[:, 0]
@@ -291,8 +295,7 @@ if calc_nearfield:
     plt.pcolormesh(X_mesh1/ac_wavelength, Z_mesh1/ac_wavelength,
                    np.real(pressure_XZ)/p_max, cmap='seismic',
                    shading='nearest', vmin=-1.5, vmax=1.5)
-    plt.plot((-DARP2016Airfoil.b/ac_wavelength, DARP2016Airfoil.b /
-             ac_wavelength), (0, 0), 'k', linewidth=6)
+    plt.plot((-b/ac_wavelength, b/ac_wavelength), (0, 0), 'k', linewidth=6)
     plt.xlabel(r"$x/\lambda_0$", fontsize=18)
     plt.ylabel(r"$z/\lambda_0$", fontsize=18)
     plt.axis('equal')
@@ -309,8 +312,7 @@ if calc_nearfield:
     plt.pcolormesh(Y_mesh2/ac_wavelength, Z_mesh2/ac_wavelength,
                    np.real(pressure_YZ)/p_max, cmap='seismic',
                    shading='nearest', vmin=-1.5, vmax=1.5)
-    plt.plot((-DARP2016Airfoil.d/ac_wavelength, DARP2016Airfoil.d /
-             ac_wavelength), (0, 0), 'k', linewidth=6)
+    plt.plot((-d/ac_wavelength, d/ac_wavelength), (0, 0), 'k', linewidth=6)
     plt.xlabel(r"$y/\lambda_0$", fontsize=18)
     plt.ylabel(r"$z/\lambda_0$", fontsize=18)
     plt.axis('equal')

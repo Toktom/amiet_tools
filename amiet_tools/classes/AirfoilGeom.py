@@ -23,3 +23,7 @@ class AirfoilGeom:
     def __post_init__(self):
         self.XYZ, self.dx, self.dy = AmT.create_airf_mesh(
             self.b, self.d, self.Nx, self.Ny)
+    
+    def export_values(self):
+        return (self.b, self.d, self.Nx, self.Ny, self.XYZ, self.dx,
+                self.dy)
