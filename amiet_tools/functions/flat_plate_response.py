@@ -304,7 +304,7 @@ def L_LE(x, sigma, Kx, ky, Mach, b):
     return L
 
 
-def L_LE_super(x, sigma, Kx, ky, Mach, b):
+def L_LE_super(x, sigma, Kx, Ky, Mach, b):
     """
     Returns the effective lift functions for supercritical gusts
 
@@ -361,7 +361,7 @@ def L_LE_super(x, sigma, Kx, ky, Mach, b):
     return L1+L2
 
 
-def L_LE_sub(x, sigma, Kx, ky, Mach, b):
+def L_LE_sub(x, sigma, Kx, Ky, Mach, b):
     """
     Returns the effective lift functions for subcritical gusts
 
