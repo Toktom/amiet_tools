@@ -1,6 +1,4 @@
-"""
-Author: Fabio Casagrande Hirono
-"""
+"""Author: Fabio Casagrande Hirono"""
 import numpy as np
 import scipy.optimize as so     # for shear layer correction functions
 
@@ -128,7 +126,6 @@ def t_convect(x1, x2, Ux, c0):
         Time taken for sound to travel from point 'x1' to point 'x2' at speed
         'c0' while subject to convection effects in the '+x' direction.
     """
-
     Mach = Ux/c0
     beta2 = 1-Mach**2  # beta squared
 
@@ -283,7 +280,6 @@ def ShearLayer_matrix(XYZ_s, XYZ_o, z_sl, Ux, c0):
     This is a convenience function, essentially two nested 'for'-loops around
     the 'ShearLayer_X' and 'ShearLayer_t' functions.
     """
-
     # ensure source/observer coordinates have appropriate shape
     # ( i.e. [3, N_points])
     if XYZ_s.ndim == 1:
@@ -351,7 +347,6 @@ def ShearLayer_Corr(XYZ_s, XYZ_sl, XYZ_m, Ux, c0):
     have reached if there was no shear layer (i.e. flow everywhere). The
     distance is corrected so that 'r(xc-xr) = r(xm-xs)'.
     """
-
     # calculate travel time inside flow (source to shear layer)
     tf = t_convect(XYZ_s, XYZ_sl, Ux, c0)
 

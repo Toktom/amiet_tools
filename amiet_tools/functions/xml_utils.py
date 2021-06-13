@@ -1,6 +1,4 @@
-"""
-Author: Michael Markus Ackermann
-"""
+"""Author: Michael Markus Ackermann"""
 
 def save_XML(fname: str, data: str):
     """Save a .xml file.

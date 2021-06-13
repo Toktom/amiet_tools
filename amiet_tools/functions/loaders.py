@@ -1,6 +1,4 @@
-"""
-Author: Fabio Casagrande Hirono
-"""
+"""Author: Fabio Casagrande Hirono"""
 import amiet_tools as AmT
 import json
 import os
@@ -132,7 +130,6 @@ def loadAirfoilGeom(*args):
                         exec('airfoilGeomFromFile.' +
                              varList[i] + '=' + words[0])
                         i += 1
-
 
             return airfoilGeomFromFile
 

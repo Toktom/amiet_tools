@@ -8,7 +8,6 @@ class TestSetup:
     Class to store test setup variables. Initializes to DARP2016 configuration
     by default.
     """
-    
     # Acoustic characteristics
     c0: float = 340.  # Speed of sound [m/s]
     rho0: float = 1.2  # Air density [kg/m**3]
@@ -36,6 +35,7 @@ class TestSetup:
         self.flow_param = (self.flow_dir, self.Mach)
     
     def export_values(self):
+        """Returns all class attributes inside a tuple."""
         return (self.c0, self.rho0, self.p_ref, self.Ux, self.turb_intensity,
                 self.length_scale, self.z_sl, self.Mach, self.beta,
                 self.flow_param, self.dipole_axis)

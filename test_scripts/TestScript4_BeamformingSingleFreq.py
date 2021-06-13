@@ -36,7 +36,7 @@ save_fig = False
 
 # %% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 # load test setup from file
-DARP2016Setup = AmT.loadTestSetup('../DARP2016_TestSetup.txt')
+DARP2016Setup = AmT.loadTestSetup('DARP2016_TestSetup.txt')
 
 # export variables to current namespace
 (c0, rho0, p_ref, Ux, turb_intensity, length_scale, z_sl, Mach, beta,
@@ -46,7 +46,7 @@ DARP2016Setup = AmT.loadTestSetup('../DARP2016_TestSetup.txt')
 # define airfoil points over the whole chord
 
 # load airfoil geometry from file
-DARP2016Airfoil = AmT.loadAirfoilGeom('../DARP2016_AirfoilGeom.txt')
+DARP2016Airfoil = AmT.loadAirfoilGeom('DARP2016_AirfoilGeom.txt')
 (b, d, Nx, Ny, XYZ_airfoil, dx, dy) = DARP2016Airfoil.export_values()
 XYZ_airfoil_calc = XYZ_airfoil.reshape(3, Nx*Ny)
 
@@ -63,8 +63,7 @@ M = XYZ_array.shape[1]
 
 # obtain propag time and shear layer crossing point for every source-mic pair
 # (forward problem - frequency independent!)
-T_sl_fwd, XYZ_sl_fwd = AmT.ShearLayer_matrix(XYZ_airfoil_calc, XYZ_array, z_sl,
-                                             Ux, c0)
+T_sl_fwd, XYZ_sl_fwd = AmT.ShearLayer_matrix(XYZ_airfoil_calc, XYZ_array, z_sl, Ux, c0)
 
 # %% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 # Define frequency of analysis
@@ -90,8 +89,7 @@ Ky = AmT.ky_vector(b, d, k0, Mach, beta)
 Phi2 = AmT.Phi_2D(Kx, Ky, Ux, turb_intensity, length_scale, model='K')[0]
 
 # calculate source CSM
-Sqq, Sqq_dxy = AmT.calc_airfoil_Sqq(
-    DARP2016Setup, DARP2016Airfoil, FreqVars, Ky, Phi2)
+Sqq, Sqq_dxy = AmT.calc_airfoil_Sqq(DARP2016Setup, DARP2016Airfoil, FreqVars, Ky, Phi2)
 
 # apply weighting for airfoil grid areas
 Sqq *= Sqq_dxy
@@ -100,8 +98,7 @@ Sqq *= Sqq_dxy
 # Create mic array CSM
 
 # create fwd transfer function
-G_fwd = AmT.dipole_shear(XYZ_airfoil_calc, XYZ_array, XYZ_sl_fwd, T_sl_fwd, k0,
-                         c0, Mach)
+G_fwd = AmT.dipole_shear(XYZ_airfoil_calc, XYZ_array, XYZ_sl_fwd, T_sl_fwd, k0, c0, Mach)
 
 # calculate mic array CSM
 CSM = (G_fwd @ Sqq @ G_fwd.conj().T)*4*np.pi
@@ -218,3 +215,4 @@ plt.text(b+0.01, d-0.05, r'\textbf{TE}', fontsize='18', color='k')
 
 if save_fig:
     plt.savefig('AirfoilBeamf_' + f0 + 'Hz.png', dpi=200)
+plt.show()

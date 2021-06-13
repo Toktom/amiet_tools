@@ -1,8 +1,5 @@
-"""
-Author: Fabio Casagrande Hirono
-"""
+"""Author: Fabio Casagrande Hirono"""
 import numpy as np
-
 from .xml_utils import save_XML, XML_calib, XML_mic
 
 

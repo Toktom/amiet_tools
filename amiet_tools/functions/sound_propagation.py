@@ -1,8 +1,5 @@
-"""
-Author: Fabio Casagrande Hirono
-"""
+"""Author: Fabio Casagrande Hirono"""
 import numpy as np
-import amiet_tools as AmT
 
 
 def dipole3D(xyz_source, xyz_obs, k0, dipole_axis='z', flow_param=None,

@@ -1,8 +1,5 @@
-"""
-Author: Fabio Casagrande Hirono
-"""
+"""Author: Fabio Casagrande Hirono"""
 import numpy as np
-from amiet_tools import AirfoilGeom
 
 
 def chord_sampling(b, Nx=200, exp_length=2):

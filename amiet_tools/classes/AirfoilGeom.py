@@ -1,4 +1,3 @@
-from mimetypes import init
 import amiet_tools as AmT
 from dataclasses import dataclass, field
 from typing import Any
@@ -25,5 +24,6 @@ class AirfoilGeom:
             self.b, self.d, self.Nx, self.Ny)
     
     def export_values(self):
+        """Returns all class attributes inside a tuple."""
         return (self.b, self.d, self.Nx, self.Ny, self.XYZ, self.dx,
                 self.dy)

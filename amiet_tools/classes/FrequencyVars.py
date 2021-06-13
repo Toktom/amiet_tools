@@ -1,6 +1,5 @@
 import numpy as np
 from dataclasses import dataclass
-import amiet_tools as AmT
 
 
 @dataclass
@@ -24,4 +23,5 @@ class FrequencyVars:
         self.Ky_crit = self.Kx*self.Mach/self.beta
     
     def export_values(self):
+        """Returns all class attributes inside a tuple."""
         return (self.k0, self.Kx, self.Ky_crit)

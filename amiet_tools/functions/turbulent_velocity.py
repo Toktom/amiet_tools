@@ -1,6 +1,4 @@
-"""
-Author: Fabio Casagrande Hirono
-"""
+"""Author: Fabio Casagrande Hirono"""
 import numpy as np
 import scipy.special as ss
 

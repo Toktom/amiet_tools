@@ -186,7 +186,6 @@ class MicArrayCsmEss:
         self.flowType = ''
         self.testDescription = ''
 
-
     # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
     def assertContents(self):
         """
@@ -194,7 +193,6 @@ class MicArrayCsmEss:
         (e.g. recently created but not used yet). This is a precondition for
         writing/saving to a HDF5 file.
         """
-
         hasData = True
 
         for attr, value in self.__dict__.items():
@@ -211,13 +209,11 @@ class MicArrayCsmEss:
 
         return hasData
 
-
     # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
     def writeToHDF5File(self):
         """
         Writes current instance contents to <caseID>CsmEss.h5 file
         """
-
         # Assert whether object has been filled with data, stop writing .h5
         # file otherwise
         assert(self.assertContents()), 'MicArrayCsmEss instance has empty attributes - cannot write <caseID>CsmEss.h5 file!'
@@ -297,7 +293,6 @@ class MicArrayCsmEss:
                                            data = self.microphoneCount,
                                            dtype='i4')
 
-
             TestAttributes = MetaData.create_group('TestAttributes')
             TestAttributes.attrs['coordinateReference'] = self.coordinateReference
 
@@ -308,9 +303,6 @@ class MicArrayCsmEss:
 
             TestAttributes.attrs['flowType'] = self.flowType
             TestAttributes.attrs['testDescription'] = self.testDescription
-
-        # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-
 
     # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
     def readFromHDF5File(self, h5Filename):
@@ -324,9 +316,7 @@ class MicArrayCsmEss:
         If a message appears, use function 'print_hdf5_file_structure' to
         manually search for missing data and read it manually. These might be
         in wrong location, and/or saved as wrong type (dataset <-> attribute).
-
         """
-
         missingDataFlag = 0
 
         h5file = h5py.File(h5Filename, 'r')
@@ -521,7 +511,7 @@ def print_hdf5_item_structure(g, offset='    '):
 
 def CSM(mic_signals, N_dft, fs, N_overlap=None, window=None):
     """
-    Calculates the cross-spectral matrix (CSM) from an array of time-domain 
+    Calculates the cross-spectral matrix (CSM) from an array of time-domain
     microphone recordings using Welch's method.
     
     Parameters
@@ -556,7 +546,6 @@ def CSM(mic_signals, N_dft, fs, N_overlap=None, window=None):
     The CSM is calculated so the 'm'-th element of its diagonal contains the
     'm'-th microphone PSD.
     """
-
     # define default 'N_overlap'
     if N_overlap is None:
         N_overlap = N_dft//2

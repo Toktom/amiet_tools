@@ -6,7 +6,7 @@ Copyright (c) 2020, Fabio Casagrande Hirono
 
 TestScript5_CreateMicArrayCsm.py
 
-Test script 5: calculates and saves the microphone array CSM for a simulated 
+Test script 5: calculates and saves the microphone array CSM for a simulated
     flat-plate Aerofoil-turbulence Interaction Noise (ATIN) case. The aerofoil
     interacts with isotropic turbulence and radiates to the microphone array;
     the radiation includes the refraction effects at the planar shear layer.

@@ -16,7 +16,7 @@ settings = {
     'author_email': 'fchirono@gmail.com',
     'license': 'BSD 3-Clause',
     'install_requires': [
-        'numpy>=1.20.3', 
+        'numpy>=1.20.3',
         'scipy>=1.6.3'],
     'packages': ['amiet_tools', 'amiet_tools.classes', 'amiet_tools.functions']
     }
