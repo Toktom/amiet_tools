@@ -17,7 +17,7 @@ Available functions:
     >>> fr_integrand_re(zeta)
     >>> r(x)
     >>> r_bar(x, Mach)
-    >>> _sigma(x, Mach)
+    >>> sigma_(x, Mach)
     >>> t_convect(x1, x2, Ux, c0)
     >>> t_sound(x1, x2, c0)
     >>> t_total(x_layer, x_source, x_mic, Ux, c0)
@@ -28,7 +28,7 @@ Available functions:
     >>> ShearLayer_corr(XYZ_s, XYZ_sl, XYZ_m, Ux, c0)
     >>> dipole_shear(XYZ_source, XYZ_obs, XYZ_sl, T_sl, k0, c0, Mach)
     >>> dipole3D(xyz_source, xyz_obs, k0, dipole_axis, flow_param, far_field)
-    >>> delta_p(rho0, b, w0, Ux, Kx, ky, xy, Mach)
+    >>> delta_p(rho0, b, w0, Kx, ky, xy, Mach)
     >>> g_LE(xs, Kx, ky, Mach, b)
     >>> g_LE_sub(xs, Kx, ky, Mach, b)
     >>> g_LE_super(xs, Kx, ky, Mach, b)
@@ -47,7 +47,7 @@ from .loaders import loadTestSetup, loadAirfoilGeom
 from .DARP2016_MicArray import DARP2016_MicArray, DARP2016_Acoular_XML
 from .wrappers import calc_airfoil_Sqq, calc_radiated_Spp
 from .fresnel import fr_int, fr_int_cc, fr_integrand_im, fr_integrand_re
-from .shear_layer import r, r_bar, _sigma, t_convect, t_sound, t_total, \
+from .shear_layer import r, r_bar, sigma_, t_convect, t_sound, t_total, \
     constr_xl, constr_yl, ShearLayer_X, ShearLayer_matrix, ShearLayer_Corr
 from .sound_propagation import dipole_shear, dipole3D
 from .flat_plate_response import delta_p, g_LE, g_LE_sub, g_LE_super, L_LE, L_LE_sub, L_LE_super
@@ -68,7 +68,7 @@ __all__ = [
     'fr_int', 'fr_int_cc',
     'fr_integrand_im',
     'fr_integrand_re',
-    'r', 'r_bar', '_sigma',
+    'r', 'r_bar', 'sigma_',
     't_convect', 't_sound',
     't_total', 'constr_xl',
     'constr_yl', 'ShearLayer_X',

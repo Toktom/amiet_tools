@@ -25,7 +25,6 @@ def loadTestSetup(*args):
     path_to_file: str [Optional]
         Relative path to setup file
     """
-
     # if called without path to file, load default testSetup (DARP2016)
     if len(args) == 0:
         return AmT.TestSetup()
@@ -92,7 +91,6 @@ def loadAirfoilGeom(*args):
     path_to_file: str [Optional]
         Relative path to airfoil geometry file
     """
-
     # if called without path to file, load default geometry (DARP2016)
     if len(args) == 0:
         return AmT.AirfoilGeom()

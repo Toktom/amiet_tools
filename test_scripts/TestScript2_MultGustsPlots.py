@@ -31,7 +31,7 @@ plt.close('all')
 
 
 def H(A):
-    """ Calculate the Hermitian conjugate transpose of a matrix 'A' """
+    """Calculate the Hermitian conjugate transpose of a matrix 'A'"""
     return A.conj().T
 
 
@@ -171,15 +171,5 @@ title_dir_YZ = ax_dir_YZ.set_title('Normalised Directivity on $x=0$ plane ($\phi
                                    fontsize=18, pad=-55)
 
 if save_fig:
-
-    if kc == 0.5:
-        fig_dir_XZ.savefig('MultGust_Xdir_kc05.png'.format(kc))
-        fig_dir_YZ.savefig('MultGust_Ydir_kc05.png'.format(kc))
-
-    elif kc == 5:
-        fig_dir_XZ.savefig('MultGust_Xdir_kc5.png'.format(kc))
-        fig_dir_YZ.savefig('MultGust_Ydir_kc5.png'.format(kc))
-
-    elif kc == 20:
-        fig_dir_XZ.savefig('MultGust_Xdir_kc20.png'.format(kc))
-        fig_dir_YZ.savefig('MultGust_Ydir_kc20.png'.format(kc))
+    fig_dir_XZ.savefig('MultGust_Xdir_kc_{}.png'.format(kc))
+    fig_dir_YZ.savefig('MultGust_Ydir_kc_{}.png'.format(kc))

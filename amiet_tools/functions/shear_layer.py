@@ -50,7 +50,7 @@ def r_bar(x, Mach):
     return np.sqrt((x[0]/beta**2)**2 + (x[1]/beta)**2 + (x[2]/beta)**2)
 
 
-def _sigma(x, Mach):
+def sigma_(x, Mach):
     """
     Flow-corrected cartesian radius of a point 'x' in 3D space, with mean flow
     in the '+x' direction.
@@ -132,7 +132,7 @@ def t_convect(x1, x2, Ux, c0):
     Mach = Ux/c0
     beta2 = 1-Mach**2  # beta squared
 
-    return (-(x2[0]-x1[0])*Mach + _sigma(x2-x1, Mach))/(c0*beta2)
+    return (-(x2[0]-x1[0])*Mach + sigma_(x2-x1, Mach))/(c0*beta2)
 
 
 def t_total(x_layer, x_source, x_mic, Ux, c0):
@@ -177,7 +177,7 @@ def constr_xl(XYZ_sl, XYZ_s, XYZ_m, Ux, c0):
     Mach = Ux/c0
     beta2 = 1-Mach**2
 
-    return np.abs((XYZ_sl[0]-XYZ_s[0])/_sigma(XYZ_sl-XYZ_s, Mach) - Mach
+    return np.abs((XYZ_sl[0]-XYZ_s[0])/sigma_(XYZ_sl-XYZ_s, Mach) - Mach
                   - beta2*(XYZ_m[0]-XYZ_sl[0])/r(XYZ_m-XYZ_sl))
 
 
@@ -187,7 +187,7 @@ def constr_yl(XYZ_sl, XYZ_s, XYZ_m, Ux, c0):
     """
     Mach = Ux/c0
 
-    return np.abs((XYZ_sl[1]-XYZ_s[1])/_sigma(XYZ_sl-XYZ_s, Mach)
+    return np.abs((XYZ_sl[1]-XYZ_s[1])/sigma_(XYZ_sl-XYZ_s, Mach)
                   - (XYZ_m[1]-XYZ_sl[1])/r(XYZ_m-XYZ_sl))
 
 
@@ -226,7 +226,6 @@ def ShearLayer_X(XYZ_s, XYZ_m, Ux, c0, z_sl):
     acoustic ray takes to propagate from a source point 'XYZ_s' within the
     mean flow to a microphone 'XYZ_m' outside the mean flow.
     """
-
     # optimization constraints
     cons = ({'type': 'eq', 'fun': lambda XYZ_sl: XYZ_sl[2]-z_sl},
             {'type': 'eq', 'fun':
@@ -246,7 +245,8 @@ def ShearLayer_X(XYZ_s, XYZ_m, Ux, c0, z_sl):
 
 
 def ShearLayer_matrix(XYZ_s, XYZ_o, z_sl, Ux, c0):
-    """ Returns two matrices containing the propagation times and the shear
+    """
+    Returns two matrices containing the propagation times and the shear
     layer crossing points for each source-observer pair.
 
     Parameters
@@ -286,10 +286,10 @@ def ShearLayer_matrix(XYZ_s, XYZ_o, z_sl, Ux, c0):
 
     # ensure source/observer coordinates have appropriate shape
     # ( i.e. [3, N_points])
-    if (XYZ_s.ndim == 1):
+    if XYZ_s.ndim == 1:
         XYZ_s = np.array([XYZ_s]).transpose()
 
-    if (XYZ_o.ndim == 1):
+    if XYZ_o.ndim == 1:
         XYZ_o = np.array([XYZ_o]).transpose()
 
     # check if shear layer is located between sources and obs

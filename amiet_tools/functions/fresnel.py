@@ -6,12 +6,12 @@ import scipy.integrate as integrate
 
 
 def fr_integrand_re(x):
-    """ Creates the argument to the Fresnel integral."""
+    """Creates the argument to the Fresnel integral."""
     return (np.exp(1j*x)/np.sqrt(x)).real
 
 
 def fr_integrand_im(x):
-    """ Creates the argument to the complex conjugate Fresnel integral."""
+    """Creates the argument to the complex conjugate Fresnel integral."""
     return (np.exp(1j*x)/np.sqrt(x)).imag
 
 
@@ -34,7 +34,6 @@ def fr_int(zeta):
     Its complex-conjugate version can be obtained from the
     'amiet_tools.fr_int_cc' function.
     """
-
     # Check if zeta is array or float
     if type(zeta) is np.ndarray:
         E = np.zeros(zeta.shape, 'complex')
@@ -73,8 +72,7 @@ def fr_int_cc(zeta):
     Its non-complex-conjugate version can be obtained from the
     'amiet_tools.fr_int' function.
     """
-
-   # Check if zeta is array or float
+    # Check if zeta is array or float
     if type(zeta) is np.ndarray:
         E_conj = np.zeros(zeta.shape, 'complex')
 

@@ -53,7 +53,6 @@ def ky_vector(b, d, k0, Mach, beta, method='AcRad', xs_ref=None):
     surface pressure calculations (excessive for acoustic radiation
     calculations).
     """
-
     # Assert 'method' string for valid inputs
     method_error = "'method' not recognized; please use either 'AcRad' or 'SurfPressure'"
     assert method in ['AcRad', 'SurfPressure'], method_error
@@ -132,7 +131,6 @@ def ky_att(xs, b, Mach, k0, Att=-20):
         Subcritical gust spanwise wavenumber 'ky_att' such that the aerofoil
         response at point 'xs' is 'Att' dB reduced.
     """
-
     beta = np.sqrt(1-Mach**2)
 
     # critical gust spanwise wavenumber

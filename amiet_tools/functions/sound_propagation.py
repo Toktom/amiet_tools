@@ -51,9 +51,7 @@ def dipole3D(xyz_source, xyz_obs, k0, dipole_axis='z', flow_param=None,
     simply do
 
     >>> p = G @ q
-
     """
-
     # check if source/observer coordinates have appropriate shape
     # ( i.e. [3, N_points])
     if (xyz_source.ndim == 1):
@@ -205,19 +203,17 @@ def dipole_shear(XYZ_source, XYZ_obs, XYZ_sl, T_sl, k0, c0, Mach):
     simply do
 
     >>> p = G @ q
-
     """
-
     # check if source/observer coordinates have appropriate shape
     # ( i.e. [3, N_points])
-    if (XYZ_source.ndim == 1):
+    if XYZ_source.ndim == 1:
         XYZ_source = np.array([XYZ_source]).transpose()
 
-    if (XYZ_obs.ndim == 1):
+    if (YZ_obs.ndim == 1:
         XYZ_obs = np.array([XYZ_obs]).transpose()
 
     # flow-corrected source-to-shear-layer propag distance
-    sigma_sl = AmT._sigma(XYZ_sl - XYZ_source[:, np.newaxis, :], Mach)
+    sigma_sl = AmT.sigma_(XYZ_sl - XYZ_source[:, np.newaxis, :], Mach)
 
     # dipole in-flow (cosine) directivity2
     dip_cos = (XYZ_sl[2]-XYZ_source[2, np.newaxis, :])/sigma_sl

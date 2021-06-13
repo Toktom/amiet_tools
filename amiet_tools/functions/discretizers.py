@@ -39,7 +39,6 @@ def chord_sampling(b, Nx=200, exp_length=2):
     Higher values of 'exp_length' provide more non-uniform sampling, while
     lower values provide more uniform sampling.
     """
-
     # calculates exponential curve
     x = np.exp(np.linspace(-exp_length/2, exp_length/2, Nx+1))
 
@@ -93,7 +92,6 @@ def create_airf_mesh(b, d, Nx=100, Ny=101):
     -----
     The airfoil 'z' coordinate is always set to zero.
     """
-
     x_airfoil, dx = chord_sampling(b, Nx)
 
     y_airfoil, dy = np.linspace(-d, d, Ny, retstep=True)

@@ -36,7 +36,6 @@ def Phi_2D(Kx, ky_vec, Ux, turb_intensity, length_scale, model='K'):
         energy for each wavenumber, according to von Karman or Liepmann
         spectrum.
     """
-
     u_mean2 = (Ux*turb_intensity)**2
 
     if type(Kx) is not np.ndarray:

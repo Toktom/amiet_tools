@@ -331,7 +331,7 @@ class MicArrayCsmEss:
 
         h5file = h5py.File(h5Filename, 'r')
 
-        if ('CsmEss.h5' in h5Filename):
+        if 'CsmEss.h5' in h5Filename:
             # If name includes 'CsmEss.h5' string at the end, removes it:
             self.caseID = h5Filename[:-9]
         else:
@@ -371,13 +371,13 @@ class MicArrayCsmEss:
 
         self.coordinateReference = h5file['MetaData/TestAttributes'].attrs['coordinateReference']
 
-        if ('domainBoundsM' in list(h5file['MetaData/TestAttributes'].keys())):
+        if 'domainBoundsM' in list(h5file['MetaData/TestAttributes'].keys()):
             self.domainBoundsM = h5file['MetaData/TestAttributes/domainBoundsM'][:]
         else:
             print("'domainBoundsM' not found as dataset under '/MetaData/TestAttributes' !")
             missingDataFlag = 1
 
-        if ('flowType' in h5file['MetaData/TestAttributes'].attrs.keys()):
+        if 'flowType' in h5file['MetaData/TestAttributes'].attrs.keys():
             self.flowType = h5file['MetaData/TestAttributes'].attrs['flowType']
         else:
             print("'flowType' not found as attribute under '/MetaData/TestAttributes' !")
@@ -408,31 +408,31 @@ class MicArrayCsmEss:
         # search for info as dataset in '/MeasurementData':
         #   (some files have these as '/MetaData' attributes, others as
         #    '/MetaData/TestAttributes' attributes; if so, user must read by hand)
-        if ('machNumber' in h5file['MeasurementData'].keys()):
+        if 'machNumber' in h5file['MeasurementData'].keys():
             self.machNumber = h5file['MeasurementData/machNumber'][:]
         else:
             print("'machNumber' not found as dataset under '/MeasurementData' !")
             missingDataFlag = 1
 
-        if ('relativeHumidityPct' in h5file['MeasurementData'].keys()):
+        if 'relativeHumidityPct' in h5file['MeasurementData'].keys():
             self.relativeHumidityPct = h5file['MeasurementData/relativeHumidityPct'][:]
         else:
             print("'relativeHumidityPct' not found as dataset under '/MeasurementData' !")
             missingDataFlag = 1
 
-        if ('speedOfSoundMPerS' in h5file['MeasurementData'].keys()):
+        if 'speedOfSoundMPerS' in h5file['MeasurementData'].keys():
             self.speedOfSoundMPerS = h5file['MeasurementData/speedOfSoundMPerS'][:]
         else:
             print("'speedOfSoundMPerS' not found as dataset under '/MeasurementData' !")
             missingDataFlag = 1
 
-        if ('staticPressurePa' in h5file['MeasurementData'].keys()):
+        if 'staticPressurePa' in h5file['MeasurementData'].keys():
             self.staticPressurePa = h5file['MeasurementData/staticPressurePa'][:]
         else:
             print("'staticPressurePa' not found as dataset under '/MeasurementData' !")
             missingDataFlag = 1
 
-        if ('staticTemperatureK' in h5file['MeasurementData'].keys()):
+        if 'staticTemperatureK' in h5file['MeasurementData'].keys():
             self.staticTemperatureK = h5file['MeasurementData/staticTemperatureK'][:]
         else:
             print("'staticTemperatureK' not found as dataset under '/MeasurementData' !")
@@ -509,7 +509,7 @@ def print_hdf5_item_structure(g, offset='    '):
         print('WARNING: UNKNOWN ITEM IN HDF5 FILE', g.name)
         sys.exit('EXECUTION IS TERMINATED')
 
-    if isinstance(g, h5py.File) or isinstance(g, h5py.Group):
+    if isinstance(g, (h5py.File, h5py.Group)):
         for key in g.keys():
             subg = g[key]
             # print(offset, key,)
@@ -607,13 +607,13 @@ def CSM(mic_signals, N_dft, fs, N_overlap=None, window=None):
 
 
 def speed_of_sound(Tc):
-    """ Returns the estimated speed of sound 'c' in air as a function of the
+    """
+    Returns the estimated speed of sound 'c' in air as a function of the
     ambient temperature 'temp' (in degrees Celsius).
 
     Uses Equation 5.6.6, p. 121, from Kinsler et al, "Fundamentals of
     Acoustics", 4th Ed., 2000.
     """
-
     # speed of sound in air at 0 deg Celsius and 1 atm pressure
     c0 = 331.5
 

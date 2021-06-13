@@ -102,7 +102,7 @@ elif test_case == 4:
 # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 
 # Calculate the pressure 'jump' over the airfoil
-delta_p1 = AmT.delta_p(rho0, b, w0, Ux, Kx, ky, XYZ_airfoil[0:2], Mach)
+delta_p1 = AmT.delta_p(rho0, b, w0, Kx, ky, XYZ_airfoil[0:2], Mach)
 
 # reshape airfoil ac. source strengths, apply weights by grid area
 delta_p1_calc = (delta_p1*dx).reshape(Nx*Ny)*dy

@@ -50,7 +50,6 @@ def calc_airfoil_Sqq(testSetup, airfoilGeom, frequencyVars, Ky_vec, Phi):
     'amiet_tools.calc_radiated_Spp' applies the equivalent areas 'Sqq_dxy' to
     numerically calculate the integration over the airfoil surface.
     """
-
     # Surface area weighting matrix for applying to Sqq
     dxy = np.ones((airfoilGeom.Ny, airfoilGeom.Nx)) * \
         airfoilGeom.dx[np.newaxis, :]*airfoilGeom.dy
@@ -70,7 +69,7 @@ def calc_airfoil_Sqq(testSetup, airfoilGeom, frequencyVars, Ky_vec, Phi):
 
         # Pressure 'jump' over the airfoil (for single gust)
         delta_p1 = AmT.delta_p(testSetup.rho0, airfoilGeom.b, w0,
-                               testSetup.Ux, frequencyVars.Kx, Ky_vec[kyi],
+                               frequencyVars.Kx, Ky_vec[kyi],
                                airfoilGeom.XYZ_airfoil[0:2], testSetup.Mach)
 
         # reshape for vector calculation
@@ -122,9 +121,7 @@ def calc_radiated_Spp(testSetup, airfoilGeom, frequencyVars, Ky_vec, Phi, G):
     'G' can be calculated using 'amiet_tools.dipole3D' for dipole sources in
     steady or moving medium, or 'amiet_tools.dipole_shear' for dipole sources
     in a shear layer medium.
-
     """
-
     Sqq, Sqq_dxy = calc_airfoil_Sqq(
         testSetup, airfoilGeom, frequencyVars, Ky_vec, Phi)
 

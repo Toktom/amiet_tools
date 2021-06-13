@@ -25,7 +25,6 @@ def rect_grid(grid_sides, point_spacings):
         The grid contains 'Nx = Lx/dx+1' points in the 'x' direction, and
         'Ny = Ly/dy+1' points in the 'y' direction.
     """
-
     # number of points on each side = Dx/dx + 1
     N_points = np.array([round(grid_sides[0]/point_spacings[0] + 1),
                          round(grid_sides[1]/point_spacings[1] + 1)],
@@ -65,7 +64,6 @@ def read_ffarray_lvm(filename, n_columns=13):
     and each microphone signal in the remaining columns. Default is time signal
     plus 12 microphones.
     """
-
     # open file as text
     lvm_file = open(filename, 'r')
 

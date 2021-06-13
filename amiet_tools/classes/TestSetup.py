@@ -8,6 +8,7 @@ class TestSetup:
     Class to store test setup variables. Initializes to DARP2016 configuration
     by default.
     """
+    
     # Acoustic characteristics
     c0: float = 340.  # Speed of sound [m/s]
     rho0: float = 1.2  # Air density [kg/m**3]

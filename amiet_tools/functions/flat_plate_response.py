@@ -6,7 +6,7 @@ import amiet_tools as AmT
 import scipy.special as ss
 
 
-def delta_p(rho0, b, w0, Ux, Kx, ky, xy, Mach):
+def delta_p(rho0, b, w0, Kx, ky, xy, Mach):
     """
     Calculates the pressure jump response 'delta_p' for a single turbulent gust.
 
@@ -20,9 +20,6 @@ def delta_p(rho0, b, w0, Ux, Kx, ky, xy, Mach):
 
     w0 : float
         Gust amplitude.
-
-    Ux : float
-        Mean flow velocity, assumed in '+x' direction.
 
     Kx : float
         Chordwise turbulent gust wavenumber.
@@ -42,7 +39,6 @@ def delta_p(rho0, b, w0, Ux, Kx, ky, xy, Mach):
         Surface pressure jump over airfoil surface mesh in response to a single
         turbulent gust with wavenumbers (Kx, ky) and amplitude 'w0'.
     """
-
     # pressure difference over the whole airfoil surface
     delta_p = np.zeros(xy[0].shape, 'complex')
 
@@ -103,7 +99,6 @@ def g_LE(xs, Kx, ky, Mach, b):
     supercritical gusts. For critical gusts, the airfoil response is
     interpolated from slightly sub- and slightly supercritical responses.
     """
-
     beta = np.sqrt(1-Mach**2)
     ky_critical = Kx*Mach/beta
 
@@ -169,7 +164,6 @@ def g_LE_super(xs, Kx, ky, Mach, b):
     but no trailing edge, while the second term contains a correction factor
     for a infinite-chord airfoil with a trailing edge but no leading edge.
     """
-
     beta = np.sqrt(1-Mach**2)
     mu_h = Kx*b/(beta**2)
     mu_a = mu_h*Mach
@@ -221,7 +215,6 @@ def g_LE_sub(xs, Kx, ky, Mach, b):
     but no trailing edge, while the second term contains a correction factor
     for a infinite-chord airfoil with a trailing edge but no leading edge.
     """
-
     beta = np.sqrt(1-Mach**2)
     mu_h = Kx*b/(beta**2)
     mu_a = mu_h*Mach
@@ -274,7 +267,6 @@ def L_LE(x, sigma, Kx, ky, Mach, b):
     These functions are the chordwise integrated surface pressures, and are
     parts of the far-field-approximated model for airfoil-turbulente noise.
     """
-
     beta = np.sqrt(1-Mach**2)
     ky_critical = Kx*Mach/beta
 
@@ -304,7 +296,7 @@ def L_LE(x, sigma, Kx, ky, Mach, b):
     return L
 
 
-def L_LE_super(x, sigma, Kx, Ky, Mach, b):
+def L_LE_super(x, sigma, Kx, ky, Mach, b):
     """
     Returns the effective lift functions for supercritical gusts
 
@@ -338,7 +330,6 @@ def L_LE_super(x, sigma, Kx, Ky, Mach, b):
     These functions are the chordwise integrated surface pressures, and are
     parts of the far-field-approximated model for airfoil-turbulente noise.
     """
-
     beta = np.sqrt(1-Mach**2)
     mu_h = Kx*b/(beta**2)
     mu_a = mu_h*Mach
@@ -361,7 +352,7 @@ def L_LE_super(x, sigma, Kx, Ky, Mach, b):
     return L1+L2
 
 
-def L_LE_sub(x, sigma, Kx, Ky, Mach, b):
+def L_LE_sub(x, sigma, Kx, ky, Mach, b):
     """
     Returns the effective lift functions for subcritical gusts
 
@@ -394,7 +385,6 @@ def L_LE_sub(x, sigma, Kx, Ky, Mach, b):
     These functions are the chordwise integrated surface pressures, and are
     parts of the far-field-approximated model for airfoil-turbulente noise.
     """
-
     beta = np.sqrt(1-Mach**2)
     mu_h = Kx*b/(beta**2)
     mu_a = mu_h*Mach
