@@ -34,10 +34,10 @@ def loadTestSetup(*args):
             f.close()
 
         return AmT.TestSetup(c0=obj["c0"], rho0=obj["rho0"],
-                               p_ref=obj["Ux"], Ux=obj["Ux"],
-                               turb_intensity=obj["turb_intensity"],
-                               length_scale=obj["length_scale"],
-                               z_sl=obj["z_sl"])
+                             p_ref=obj["Ux"], Ux=obj["Ux"],
+                             turb_intensity=obj["turb_intensity"],
+                             length_scale=obj["length_scale"],
+                             z_sl=obj["z_sl"])
     elif extension == ".txt":
         # initialize new instance of testSetup
         testSetupFromFile = AmT.TestSetup()
@@ -46,15 +46,15 @@ def loadTestSetup(*args):
                    'length_scale', 'z_sl']
         i = 0
 
-            # open file name given by 'args[0]'
+        # open file name given by 'args[0]'
         with open(args[0]) as f:
             # get list with file lines as strings
             all_lines = f.readlines()
 
-                # for each line...
+            # for each line...
             for line in all_lines:
 
-                    # skip comments and empty lines
+                # skip comments and empty lines
                 if line[0] not in ['#', '\n']:
                     words = line.split('\t')
                     # take 1st element as value (ignore comments)
@@ -94,7 +94,7 @@ def loadAirfoilGeom(*args):
             f.close()
 
         return AmT.AirfoilGeom(b=obj["b"], d=obj["d"],
-                                 Nx=obj["Nx"], Ny=obj["Ny"])
+                               Nx=obj["Nx"], Ny=obj["Ny"])
     elif extension == ".txt":
         # initialize new instance of testSetup
         airfoilGeomFromFile = AmT.AirfoilGeom()
@@ -102,15 +102,15 @@ def loadAirfoilGeom(*args):
         varList = ['b', 'd', 'Nx', 'Ny']
         i = 0
 
-            #path_to_file = '../DARP2016_AirfoilGeom.txt'
+        #path_to_file = '../DARP2016_AirfoilGeom.txt'
         with open(args[0]) as f:
             # get list with file lines as strings
             all_lines = f.readlines()
 
-                # for each line...
+            # for each line...
             for line in all_lines:
 
-                    # skip comments and empty lines
+                # skip comments and empty lines
                 if line[0] not in ['#', '\n']:
                     words = line.split('\t')
                     # take 1st element as value (ignore comments)

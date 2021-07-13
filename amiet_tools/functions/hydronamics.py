@@ -51,9 +51,10 @@ def ky_vector(b, d, k0, Mach, beta, method='AcRad', xs_ref=None):
     surface pressure calculations (excessive for acoustic radiation
     calculations).
     """
-    # Assert 'method' string for valid inputs
-    method_error = "'method' not recognized; please use either 'AcRad' or 'SurfPressure'"
-    assert method in ['AcRad', 'SurfPressure'], method_error
+    if method not in ['AcRad', 'SurfPressure']:
+        # Assert 'method' string for valid inputs
+        method_error = "'method' not recognized; please use either 'AcRad' or 'SurfPressure'"
+        raise ValueError(method_error)
 
     # critical hydrodynamic spanwise wavenumber
     ky_crit = k0/beta

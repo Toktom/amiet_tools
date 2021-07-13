@@ -2,6 +2,7 @@
 import numpy as np
 import amiet_tools as AmT
 
+
 def dipole3D(xyz_source, xyz_obs, k0, dipole_axis='z', flow_param=None,
              far_field=False):
     """
@@ -51,10 +52,10 @@ def dipole3D(xyz_source, xyz_obs, k0, dipole_axis='z', flow_param=None,
     """
     # check if source/observer coordinates have appropriate shape
     # ( i.e. [3, N_points])
-    if (xyz_source.ndim == 1):
+    if xyz_source.ndim == 1:
         xyz_source = np.array([xyz_source]).transpose()
 
-    if (xyz_obs.ndim == 1):
+    if xyz_obs.ndim == 1:
         xyz_obs = np.array([xyz_obs]).transpose()
 
     # dictionary with direction-to-axis mapping
@@ -130,7 +131,6 @@ def dipole3D(xyz_source, xyz_obs, k0, dipole_axis='z', flow_param=None,
             # Matrix of convected Green's functions
             G_dipole = ((1j*k0 + 1./rB)*dip_cos*np.exp(1j*k0*Mach*xB)
                         * np.exp(-1j*k0*rB)/(4*np.pi*(beta**2)*rB))
-
 
     return G_dipole
 
@@ -219,4 +219,4 @@ def dipole_shear(XYZ_source, XYZ_obs, XYZ_sl, T_sl, k0, c0, Mach):
     omega0 = k0*c0
 
     return ((1j*k0 + 1/(rbar_sl + r_lm))*dip_cos
-                * np.exp(-1j*omega0*T_sl)/(4*np.pi*(sigma_sl + r_lm)))
+            * np.exp(-1j*omega0*T_sl)/(4*np.pi*(sigma_sl + r_lm)))

@@ -55,3 +55,4 @@ def Phi_2D(Kx, ky_vec, Ux, turb_intensity, length_scale, model='K'):
         return ((u_mean2*ls2/(4*np.pi))
                 * ((1+ls2*(4*Kx[:, np.newaxis]**2 + ky_vec**2)))
                 / (1+ls2*(Kx[:, np.newaxis]**2 + ky_vec**2))**(5./2))
+    return None

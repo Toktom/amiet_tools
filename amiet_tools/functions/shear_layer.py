@@ -288,10 +288,10 @@ def ShearLayer_matrix(XYZ_s, XYZ_o, z_sl, Ux, c0):
     if XYZ_o.ndim == 1:
         XYZ_o = np.array([XYZ_o]).transpose()
 
-    # check if shear layer is located between sources and obs
-    sl_height_error = "Shear layer is not located between all sources and observers"
-    assert (np.prod(np.sign(XYZ_o[2] - z_sl))
-            == np.prod(np.sign(z_sl - XYZ_s[2]))), sl_height_error
+    if np.prod(np.sign(XYZ_o[2] - z_sl)) != np.prod(np.sign(z_sl - XYZ_s[2])):
+        # check if shear layer is located between sources and obs
+        sl_height_error = "Shear layer is not located between all sources and observers"
+        raise ValueError(sl_height_error)
 
     # number of obs and sources
     M = XYZ_o.shape[1]
