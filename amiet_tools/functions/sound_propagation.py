@@ -1,6 +1,6 @@
 """Author: Fabio Casagrande Hirono"""
 import numpy as np
-
+import amiet_tools as AmT
 
 def dipole3D(xyz_source, xyz_obs, k0, dipole_axis='z', flow_param=None,
              far_field=False):
@@ -57,6 +57,9 @@ def dipole3D(xyz_source, xyz_obs, k0, dipole_axis='z', flow_param=None,
     if (xyz_obs.ndim == 1):
         xyz_obs = np.array([xyz_obs]).transpose()
 
+    # dictionary with direction-to-axis mapping
+    dir_keys = {'x': 0, 'y': 1, 'z': 2}
+
     # M = xyz_obs.shape[1]
     # N = xyz_source.shape[1]
 
@@ -67,9 +70,6 @@ def dipole3D(xyz_source, xyz_obs, k0, dipole_axis='z', flow_param=None,
         r = np.sqrt(((xyz_obs[:, :, np.newaxis]
                       - xyz_source[:, np.newaxis, :])**2).sum(0))
 
-        # dictionary with direction-to-axis mapping
-        dir_keys = {'x': 0, 'y': 1, 'z': 2}
-
         # read dictionary entry for 'flow_dir'
         i_dip = dir_keys[dipole_axis]
 
@@ -79,9 +79,6 @@ def dipole3D(xyz_source, xyz_obs, k0, dipole_axis='z', flow_param=None,
         # matrix of Green's functions
         G_dipole = (1j*k0 + 1/r)*dip_cos*np.exp(-1j*k0*r)/(4*np.pi*r)
 
-        return G_dipole
-
-    # if calculating Greens function for a convected medium :
     else:
 
         # parse 'flow_param' tuple
@@ -89,9 +86,6 @@ def dipole3D(xyz_source, xyz_obs, k0, dipole_axis='z', flow_param=None,
 
         # flow correction factor
         beta = np.sqrt(1.-Mach**2)
-
-        # dictionary with direction-to-axis mapping
-        dir_keys = {'x': 0, 'y': 1, 'z': 2}
 
         # read dictionary entry for 'flow_dir'
         i_flow = dir_keys[flow_dir]
@@ -137,7 +131,8 @@ def dipole3D(xyz_source, xyz_obs, k0, dipole_axis='z', flow_param=None,
             G_dipole = ((1j*k0 + 1./rB)*dip_cos*np.exp(1j*k0*Mach*xB)
                         * np.exp(-1j*k0*rB)/(4*np.pi*(beta**2)*rB))
 
-        return G_dipole
+
+    return G_dipole
 
 
 def dipole_shear(XYZ_source, XYZ_obs, XYZ_sl, T_sl, k0, c0, Mach):
@@ -206,7 +201,7 @@ def dipole_shear(XYZ_source, XYZ_obs, XYZ_sl, T_sl, k0, c0, Mach):
     if XYZ_source.ndim == 1:
         XYZ_source = np.array([XYZ_source]).transpose()
 
-    if (YZ_obs.ndim == 1:
+    if XYZ_obs.ndim == 1:
         XYZ_obs = np.array([XYZ_obs]).transpose()
 
     # flow-corrected source-to-shear-layer propag distance
@@ -223,7 +218,5 @@ def dipole_shear(XYZ_source, XYZ_obs, XYZ_sl, T_sl, k0, c0, Mach):
 
     omega0 = k0*c0
 
-    G_dip_sl = ((1j*k0 + 1/(rbar_sl + r_lm))*dip_cos
+    return ((1j*k0 + 1/(rbar_sl + r_lm))*dip_cos
                 * np.exp(-1j*omega0*T_sl)/(4*np.pi*(sigma_sl + r_lm)))
-
-    return G_dip_sl

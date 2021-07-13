@@ -42,10 +42,9 @@ def fr_int(zeta):
                 E[i] = (integrate.quad(fr_integrand_re, 0, zeta[i])[0]
                         + 1j*integrate.quad(fr_integrand_im, 0, zeta[i])[0])
 
-    else:
-        if zeta != 0:
-            E = (integrate.quad(fr_integrand_re, 0, zeta)[0]
-                 + 1j*integrate.quad(fr_integrand_im, 0, zeta)[0])
+    elif zeta != 0:
+        E = (integrate.quad(fr_integrand_re, 0, zeta)[0]
+             + 1j*integrate.quad(fr_integrand_im, 0, zeta)[0])
 
     return (1/np.sqrt(2*np.pi))*E
 
@@ -81,9 +80,8 @@ def fr_int_cc(zeta):
                 E_conj[i] = (integrate.quad(fr_integrand_re, 0, zeta[i])[0]
                              - 1j*integrate.quad(fr_integrand_im, 0, zeta[i])[0])
 
-    else:
-        if zeta != 0:
-            E_conj = (integrate.quad(fr_integrand_re, 0, zeta)[0]
-                      - 1j*integrate.quad(fr_integrand_im, 0, zeta)[0])
+    elif zeta != 0:
+        E_conj = (integrate.quad(fr_integrand_re, 0, zeta)[0]
+                  - 1j*integrate.quad(fr_integrand_im, 0, zeta)[0])
 
     return (1/np.sqrt(2*np.pi))*E_conj

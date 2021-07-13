@@ -21,12 +21,11 @@ def XML_mic(array: list):
     Returns:
         (str): string of points in a .xml format.
     """
-    positions = ""
     new_pos = '<pos\tName="Point {i}"\tx="{x}"\ty="{y}"\tz="{y}" />\n'
-    for i in range(len(array[0])):
-        positions = positions + \
-            new_pos.format(i=i+1, x=array[0, i], y=array[1, i], z=array[2, i])
-    return positions
+    return "".join(
+        new_pos.format(i=i + 1, x=array[0, i], y=array[1, i], z=array[2, i])
+        for i in range(len(array[0]))
+    )
 
 
 def XML_calib(calib_data: list):
@@ -38,8 +37,8 @@ def XML_calib(calib_data: list):
     Returns:
         str: string of calibration data in a .xml format.
     """
-    positions = ""
     new_pos = '<pos\tName="Point {i}"\tfactor="{factor}"/>\n'
-    for i in range(len(calib_data)):
-        positions = positions + new_pos.format(i=i+1, factor=calib_data[i]/100)
-    return positions
+    return "".join(
+        new_pos.format(i=i + 1, factor=calib_data[i] / 100)
+        for i in range(len(calib_data))
+    )

@@ -106,13 +106,11 @@ def g_LE(xs, Kx, ky, Mach, b):
 
     # supercritical gusts
     if p_diff < -1e-3:
-        g = g_LE_super(xs, Kx, ky, Mach, b)
+        return g_LE_super(xs, Kx, ky, Mach, b)
 
-    # subcritical gusts
     elif p_diff > 1e-3:
-        g = g_LE_sub(xs, Kx, ky, Mach, b)
+        return g_LE_sub(xs, Kx, ky, Mach, b)
 
-    # critical gusts (interpolate between super- and subcritical)
     else:
 
         # get gusts 1% above and below critical ky
@@ -122,9 +120,7 @@ def g_LE(xs, Kx, ky, Mach, b):
         g_sp = g_LE_super(xs, Kx, ky_sp, Mach, b)
         g_sb = g_LE_sub(xs, Kx, ky_sb, Mach, b)
 
-        g = (g_sp + g_sb)/2.
-
-    return g
+        return (g_sp + g_sb)/2.
 
 
 def g_LE_super(xs, Kx, ky, Mach, b):
@@ -274,13 +270,11 @@ def L_LE(x, sigma, Kx, ky, Mach, b):
 
     # supercritical gusts
     if p_diff < -1e-3:
-        L = L_LE_super(x, sigma, Kx, ky, Mach, b)
+        return L_LE_super(x, sigma, Kx, ky, Mach, b)
 
-    # subcritical gusts
     elif p_diff > 1e-3:
-        L = L_LE_sub(x, sigma, Kx, ky, Mach, b)
+        return L_LE_sub(x, sigma, Kx, ky, Mach, b)
 
-    # critical gusts (interpolate between super- and subcritical)
     else:
         # get gusts 1% above and below critical ky
         ky_sp = ky*0.99
@@ -289,9 +283,7 @@ def L_LE(x, sigma, Kx, ky, Mach, b):
         L_sp = L_LE_super(x, sigma, Kx, ky_sp, Mach, b)
         L_sb = L_LE_sub(x, sigma, Kx, ky_sb, Mach, b)
 
-        L = (L_sp + L_sb)/2.
-
-    return L
+        return (L_sp + L_sb)/2.
 
 
 def L_LE_super(x, sigma, Kx, Ky, Mach, b):

@@ -57,14 +57,8 @@ Dependencies:
 """
 
 from .version import __author__, __date__, __version__
-from amiet_tools.classes import TestSetup, FrequencyVars, AirfoilGeom
-from amiet_tools.functions import loadTestSetup, loadAirfoilGeom, \
-    create_airf_mesh, chord_sampling, DARP2016_MicArray, DARP2016_Acoular_XML, \
-    fr_int, fr_int_cc, fr_integrand_im, fr_integrand_re, r, r_bar, sigma_, \
-    t_convect, t_sound, t_total, constr_xl, constr_yl, ShearLayer_X, \
-    ShearLayer_matrix, ShearLayer_Corr, dipole_shear, dipole3D, \
-    delta_p, g_LE, g_LE_sub, g_LE_super, L_LE, L_LE_sub, L_LE_super, \
-    ky_att, ky_vector, Phi_2D, read_ffarray_lvm, rect_grid
+from amiet_tools.classes import *
+from amiet_tools.functions import *
 # Just to prevent "unused" warnings.
 assert __author__ and __date__ and __version__
 

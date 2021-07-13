@@ -321,13 +321,7 @@ class MicArrayCsmEss:
 
         h5file = h5py.File(h5Filename, 'r')
 
-        if 'CsmEss.h5' in h5Filename:
-            # If name includes 'CsmEss.h5' string at the end, removes it:
-            self.caseID = h5Filename[:-9]
-        else:
-            # If not, remove only '.h5' ending
-            self.caseID = h5Filename[:-3]
-
+        self.caseID = h5Filename[:-9] if 'CsmEss.h5' in h5Filename else h5Filename[:-3]
         # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
         # MetaData group
 
@@ -475,7 +469,6 @@ def print_hdf5_item_structure(g, offset='    '):
             print('    ', f_attr, ': ', g.attrs[f_attr])
 
     elif isinstance(g, h5py.Dataset):
-        # print('(Dataset)', g.name, '    shape =', g.shape)    # , g.dtype
         print('\n')
         print(offset + '[Dataset]', g.name)
         print(offset + 'shape =', g.shape)

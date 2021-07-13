@@ -62,26 +62,17 @@ def read_ffarray_lvm(filename, n_columns=13):
     and each microphone signal in the remaining columns. Default is time signal
     plus 12 microphones.
     """
-    # open file as text
-    lvm_file = open(filename, 'r')
-
-    # count the number of lines (has to read the whole file,
-    # hence closing and opening again)
-    n_lines = len(list(lvm_file))
-    lvm_file.close()
-
+    with open(filename, 'r') as lvm_file:
+        # count the number of lines (has to read the whole file,
+        # hence closing and opening again)
+        n_lines = len(list(lvm_file))
     t = np.zeros(n_lines)
     mics = np.zeros((n_lines, n_columns-1))
 
-    # read line ignoring the '\r\n' at the end,
-    # and using '\t' as column separators
-    lvm_file = open(filename, 'r')
-    for line in range(n_lines):
-        current_line = lvm_file.readline().split('\r\n')[0].split('\t')
-        t[line] = float(current_line[0])
-        mics[line, :] = [float(x) for x in current_line][1:]
-
-    # close file
-    lvm_file.close()
+    with open(filename, 'r') as lvm_file:
+        for line in range(n_lines):
+            current_line = lvm_file.readline().split('\r\n')[0].split('\t')
+            t[line] = float(current_line[0])
+            mics[line, :] = [float(x) for x in current_line][1:]
 
     return t, mics.T
